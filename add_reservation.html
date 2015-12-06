@@ -7,7 +7,7 @@
 <body>
     <h1>Add Reservation for {{resource_name}}</h1>
     <form action="/addreservation/result" method="post">
-        <input type="hidden" name="resource_name">
+        <input type="hidden" name="resource_name" value="{{resource_name}}"><br>
         start time:<br>
         <input type="text" name="stime"><br>
         duration:<br>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<head>
+    <meta charset="UTF-8">
+    <title>Reservation Page of {{reservation.resource_name}}</title>
+</head>
+<body>
+    <a href="/user?user={{reservation.user}}">{{reservation.user}}</a>
+    <a href="/resource?resource_name={{reservation.resource_name}}">{{reservation.resource_name}}</a>
+    {{reservation.start_datetime.strftime("%m/%d/%y,%H:%M:%S")}}
+    {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}
+</body>
+</html>
+{% endautoescape %}

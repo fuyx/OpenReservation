@@ -1,4 +1,8 @@
 from datetime import *
+
+from model import Reservation
+
+
 def getTime(hour,min):
     return time(int(hour),int(min))
 def getDatetime(dt):
@@ -8,3 +12,8 @@ def isEqual(s1,s2=''):
         return True
     else:
         return False
+
+def deleteOutDateReservation():
+    out_date_res = Reservation.query(Reservation.end_datetime < datetime.now())
+    for reservation in out_date_res:
+        reservation.delete()

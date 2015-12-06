@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<head>
+    <meta charset="UTF-8">
+    <title>Error Page</title>
+</head>
+<body>
+    <h1>{{error_message}}</h1>
+    <br>
+    <a href="{{url}}">{{ url_linktext }}</a>
+</body>
+</html>
+{% endautoescape %}

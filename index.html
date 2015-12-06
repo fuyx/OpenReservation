@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Open Reserve</title>
 </head>
+{% if isIndex %}
 <section1>
     {% for resource in resources %}
         <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
@@ -16,23 +17,42 @@
         {% endfor %}
         <hr>
     {% endfor %}
+    <a href="/addresource">add a new resource!</a>
+    <br>
+    <a href="{{ url|safe }}">{{ url_linktext }}</a>
 </section1>
-
+{% endif %}
+{%if isIndex%}
+<section1>
+{% else %}
 <section2>
+    {% endif %}
     {% for reservation in reservations %}
         {{reservation.user}}
         {{reservation.resource_name}}
-        {{reservation.start_datetime.strftime("%M,%D,%Y,%H:%M:%S")}}
-        {{reservation.duration}}
+        <a href="/reservation?resource_name={{reservation.resource_name}}">{{reservation.start_datetime.strftime("%m/%d/%y,%H:%M:%S")}} to {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}</a>
         <hr>
     {% endfor %}
-</section2>
 
+{%if isIndex%}
+</section1>
+{% else %}
+</section2>
+    {% endif %}
+
+{%if isIndex%}
 <section3>
+{% else %}
+<section2>
+{% endif %}
     {% for resource in myresources %}
         <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
         <hr>
     {% endfor %}
+{%if isIndex%}
 </section3>
+{% else %}
+</section2>
+{% endif %}
 </html>
 {% endautoescape %}
