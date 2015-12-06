@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<head>
+    <meta charset="UTF-8">
+    <title>ADD RESOURCE</title>
+</head>
+<body>
+    <form action="/addresource/result" method="post">
+        Resource name:<br>
+        <input type="text" name="resname"><br>
+        Avalibale start time:<br>
+        <input type="text" name="stime"><br>
+        Avalibale end time:<br>
+        <input type="text" name="etime"><br>
+        Tags:<br>
+        <input type="text" name="tags"><br>
+        <br>
+        <input type="submit" value="add">
+    </form>
+    <hr>
+    <a href="{{ url|safe }}">{{ url_linktext }}</a>
+</body>
+</html>
+{% endautoescape %}

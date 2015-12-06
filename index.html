@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <meta charset="UTF-8">
+    <title>Open Reserve</title>
+</head>
+<section1>
+    {% for resource in resources %}
+        <a href="/addreservation?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
+        {{resource.owner}}
+        {{resource.available_time_start.strftime("%H:%M:%S")}}
+        {{resource.available_time_end.strftime("%H:%M:%S")}}
+        {% for tag in resource.tags %}
+            {{tag}}
+        {% endfor %}
+        <hr>
+    {% endfor %}
+
+</section1>
+<section2>
+    {% for reservation in reservations %}
+        {{reservation.user}}
+        {{reservation.resource_name}}
+        {{reservation.start_datetime.strftime("%M,%D,%Y,%H:%M:%S")}}
+        {{reservation.duration}}
+        <hr>
+    {% endfor %}
+</section2>
+</html>
+{% endautoescape %}

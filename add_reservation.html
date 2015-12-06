@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<head>
+    <meta charset="UTF-8">
+    <title>Add Reservation</title>
+</head>
+<body>
+    <h1>Add Reservation for {{resource_name}}</h1>
+    <form action="/addreservation/result" method="post">
+        <input type="hidden" name="resource_name">
+        start time:<br>
+        <input type="text" name="stime"><br>
+        duration:<br>
+        <input type="text" name="duration"><br>
+        <br>
+        <input type="submit" value="add">
+    </form>
+    <hr>
+    <a href="{{ url|safe }}">{{ url_linktext }}</a>
+</body>
+</html>
+{% endautoescape %}

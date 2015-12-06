@@ -1,0 +1,12 @@
+
+section1 {
+    width:500px;
+    float:left;
+    padding:10px;
+}
+section2 {
+    position: fixed;
+    left:600px;
+    width:500px;
+    padding:10px;
+}
