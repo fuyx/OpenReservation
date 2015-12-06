@@ -10,3 +10,9 @@ section2 {
     width:500px;
     padding:10px;
 }
+section3{
+    position: fixed;
+    left:1200px;
+    width:500px;
+    padding:10px;
+}

@@ -7,7 +7,7 @@
 </head>
 <section1>
     {% for resource in resources %}
-        <a href="/addreservation?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
+        <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
         {{resource.owner}}
         {{resource.available_time_start.strftime("%H:%M:%S")}}
         {{resource.available_time_end.strftime("%H:%M:%S")}}
@@ -16,8 +16,8 @@
         {% endfor %}
         <hr>
     {% endfor %}
-
 </section1>
+
 <section2>
     {% for reservation in reservations %}
         {{reservation.user}}
@@ -27,5 +27,12 @@
         <hr>
     {% endfor %}
 </section2>
+
+<section3>
+    {% for resource in myresources %}
+        <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
+        <hr>
+    {% endfor %}
+</section3>
 </html>
 {% endautoescape %}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<head>
+
+    <meta charset="UTF-8">
+    <title>Resource Page</title>
+</head>
+<body>
+    {% for resource in resources %}
+        {% if resource.owner|string == user|string %}
+            <form action="/resource/change" method="post">
+                Resource name:<br>
+                <input type="text" name="resname" value={{resource.resource_name}}><br>
+                Avalibale start time:<br>
+                <input type="text" name="stime" value={{resource.available_time_start.strftime("%H:%M:%S")}}><br>
+                Avalibale end time:<br>
+                <input type="text" name="etime" value={{resource.available_time_end.strftime("%H:%M:%S")}}><br>
+                Tags:<br>
+                {% for tag in resource.tags %}
+                       <input type="text" name="tags" value={{tag}}><br>
+                {% endfor %}
+            <input type="submit" value="change">
+            </form>
+        {% else %}
+            {{resource.resource_name}}<br>
+            {{resource.owner}}<br>
+            {{resource.available_time_start.strftime("%H:%M:%S")}}<br>
+            {{resource.available_time_end.strftime("%H:%M:%S")}}<br>
+            {% for tag in resource.tags %}
+                {{tag}}<br>
+            {% endfor %}
+        {% endif %}
+        <a href="/addreservation?resource_name={{resource.resource_name}}">reserve it!</a>
+    {% endfor %}
+</body>
+
+</html>
+{% endautoescape %}
