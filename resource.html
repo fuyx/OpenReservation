@@ -5,11 +5,18 @@
     <meta charset="UTF-8">
     <title>Resource Page of {{reservations.resource_name}}</title>
 </head>
+<h1>Resource Page of {{reservations.resource_name}}</h1>
+Tags:
+{% for tag in resource.tags %}
+<a href="/tag?tag={{tag}}">{{tag}}</a>
+{% endfor %}
+<br>
+<a href="/RSS?resource_name={{resource.resource_name}}">Dump this resource to RSS</a>
 <section1>
     {% for reservation in reservations %}
         {{reservation.user}}
         {{reservation.resource_name}}
-        <a href="/reservation?resource_name={{reservation.resource_name}}">{{reservation.start_datetime.strftime("%m/%d/%y,%H:%M:%S")}} to {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}</a>
+        <a href="/reservation?resource_name={{reservation.resource_name}}">{{reservation.start_datetime_string}} to {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}</a>
         <hr>
     {% endfor %}
     <a href="/addreservation?resource_name={{resource.resource_name}}">reserve it!</a>
@@ -25,7 +32,7 @@
         <input type="text" name="etime" value={{resource.available_time_end.strftime("%H:%M:%S")}}><br>
         Tags:<br>
         {% for tag in resource.tags %}
-        <input type="text" name="tags" value={{tag}}><br>
+        <input type="text" name="tag" value={{tag}}><br>
         {% endfor %}
         <input type="submit" value="change">
     </form>

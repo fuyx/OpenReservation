@@ -3,8 +3,17 @@
 <head>
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
     <meta charset="UTF-8">
-    <title>Open Reserve</title>
+    {% if isIndex %}
+    <title>Open Reservation</title>
+    {% else %}
+    <title>User Page: {{user}}</title>
+    {% endif %}
 </head>
+{% if isIndex %}
+<h1>Welcome to Open Reservation!</h1>
+{% else %}
+<h1>Information about {{user}}</h1>
+{% endif %}
 {% if isIndex %}
 <section1>
     {% for resource in resources %}
@@ -23,22 +32,22 @@
 </section1>
 {% endif %}
 {%if isIndex%}
-<section1>
-{% else %}
 <section2>
-    {% endif %}
+{% else %}
+<section1>
+{% endif %}
     {% for reservation in reservations %}
         {{reservation.user}}
         {{reservation.resource_name}}
         <a href="/reservation?resource_name={{reservation.resource_name}}">{{reservation.start_datetime.strftime("%m/%d/%y,%H:%M:%S")}} to {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}</a>
+        <a href="/deletereservation?resource_name={{reservation.resource_name}}&start_datetime_string={{reservation.start_datetime_string}}">delete</a>
         <hr>
     {% endfor %}
-
 {%if isIndex%}
-</section1>
-{% else %}
 </section2>
-    {% endif %}
+{% else %}
+</section1>
+{% endif %}
 
 {%if isIndex%}
 <section3>

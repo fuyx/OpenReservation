@@ -1,17 +1,21 @@
 
 section1 {
+    position: fixed;
+    top:100px;
     width:500px;
     float:left;
     padding:10px;
 }
 section2 {
     position: fixed;
+    top:100px;
     left:600px;
     width:500px;
     padding:10px;
 }
 section3{
     position: fixed;
+    top:100px;
     left:1200px;
     width:500px;
     padding:10px;

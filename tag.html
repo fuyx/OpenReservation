@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<head>
+    <meta charset="UTF-8">
+    <title>Resources with Tag: {{tag}}</title>
+</head>
+<body>
+{% for resource in resources%}
+<a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
+<hr>
+{% endfor %}
+</body>
+</html>
+{% endautoescape %}

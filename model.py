@@ -8,9 +8,11 @@ class Resource(ndb.Model):
     available_time_end = ndb.TimeProperty(indexed=False)
     tags = ndb.StringProperty(repeated=True)
     last_reserve_time=ndb.DateTimeProperty(required=True,default=datetime(2000,1,1,1,0))
+    reserve_times=ndb.IntegerProperty(required=True,default=0)
 
 class Reservation(ndb.Model):
     user = ndb.StringProperty(required=True)
     resource_name = ndb.StringProperty(required=True)
     start_datetime = ndb.DateTimeProperty(required=True)
     end_datetime = ndb.DateTimeProperty(required=True)
+    start_datetime_string = ndb.StringProperty(required=True)

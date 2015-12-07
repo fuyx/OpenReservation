@@ -7,7 +7,7 @@
 <body>
     <a href="/user?user={{reservation.user}}">{{reservation.user}}</a>
     <a href="/resource?resource_name={{reservation.resource_name}}">{{reservation.resource_name}}</a>
-    {{reservation.start_datetime.strftime("%m/%d/%y,%H:%M:%S")}}
+    {{reservation.start_datetime_string}}
     {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}
 </body>
 </html>
