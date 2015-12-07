@@ -5,7 +5,7 @@
     <title>ADD RESOURCE</title>
 </head>
 <body>
-    <form action="/addresource/result" method="post">
+    <form action="/addresource/result" enctype="multipart/form-data" method="post">
         Resource name:<br>
         <input type="text" name="resname"><br>
         Avalibale start time:<br>
@@ -14,7 +14,10 @@
         <input type="text" name="etime"><br>
         Tags:<br>
         <input type="text" name="tags"><br>
-        <br>
+        Image:<br>
+        <input type="file" name="img"><br>
+        Description:<br>
+        <input type="text" name="description"><br>
         <input type="submit" value="add">
     </form>
     <hr>

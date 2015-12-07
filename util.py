@@ -36,8 +36,8 @@ def checkResourceTime(start, end, res_start, res_end):
         return False
 
 
-def checkReservationConflict(dt_start,dt_end):
-    reservations=Reservation.query().order(Reservation.start_datetime)
+def checkReservationConflict(resname,dt_start,dt_end):
+    reservations=Reservation.query(Reservation.resource_name==resname).order(Reservation.start_datetime)
     prev_end_time=None
     last_reservation=None
     for reservation in reservations:

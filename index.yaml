@@ -12,6 +12,16 @@ indexes:
 
 - kind: Reservation
   properties:
+  - name: resource_name
+  - name: start_datetime
+
+- kind: Reservation
+  properties:
+  - name: user
+  - name: start_datetime
+
+- kind: Reservation
+  properties:
   - name: user
   - name: start_datetime
     direction: desc

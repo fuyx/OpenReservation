@@ -36,6 +36,10 @@
 {% else %}
 <section1>
 {% endif %}
+    <form action="/search" method="get">
+        <input type="text" name="resource_name">
+        <input type="submit" value="search">
+    </form>
     {% for reservation in reservations %}
         {{reservation.user}}
         {{reservation.resource_name}}

@@ -9,6 +9,8 @@ class Resource(ndb.Model):
     tags = ndb.StringProperty(repeated=True)
     last_reserve_time=ndb.DateTimeProperty(required=True,default=datetime(2000,1,1,1,0))
     reserve_times=ndb.IntegerProperty(required=True,default=0)
+    img=ndb.BlobProperty()
+    description=ndb.TextProperty()
 
 class Reservation(ndb.Model):
     user = ndb.StringProperty(required=True)

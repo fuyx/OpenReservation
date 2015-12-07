@@ -4,6 +4,7 @@ import os
 import urllib
 from google.appengine.api import users
 from google.appengine.ext import ndb
+from google.appengine.api import images
 from datetime import *
 import jinja2
 import webapp2
@@ -61,13 +62,19 @@ class AddResResult(webapp2.RequestHandler):
         except:
             self.response.write('error')
             return
-        resource.tags = tags = self.request.get('tags').split(',')
+        resource.tags = self.request.get('tags').split(',')
+        img=self.request.get('img')
+        if img:
+            img=images.resize(img,180,180)
+            resource.img=img
+        if self.request.get('description'):
+            resource.description=self.request.get('description')
+        resource.description=self.request.get('description')
         if (user and resource.resource_name != ''):
-            key = resource.put()
+            resource.put()
             self.redirect('/')
         else:
             self.response.write('error')
-
 
 class AddReservation(webapp2.RequestHandler):
     def get(self):
@@ -86,7 +93,6 @@ class AddReservation(webapp2.RequestHandler):
         }
         template = JINJA_ENVIRONMENT.get_template('add_reservation.html')
         self.response.write(template.render(template_values))
-
 
 class AddReservResult(webapp2.RequestHandler):
     def post(self):
@@ -111,9 +117,9 @@ class AddReservResult(webapp2.RequestHandler):
             template = JINJA_ENVIRONMENT.get_template('erro.html')
             self.response.write(template.render(template_values))
             return
-        if not checkReservationConflict(getDatetime(start), getDatetime(end)):
+        if not checkReservationConflict(self.request.get('resource_name'),getDatetime(start), getDatetime(end)):
             template_values = {
-                'error_message': 'There is another reservation in the time range you choose :)',
+                'error_message': 'There is another reservation in the time range.\nPlease try another time :)',
                 'url': '/addreservation?resource_name=' + self.request.get('resource_name'),
                 'url_linktext': 'try again'
             }
@@ -128,7 +134,9 @@ class AddReservResult(webapp2.RequestHandler):
         reservation.end_datetime = getDatetime(end)
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
         resource.last_reserve_time = datetime.now()
-        key = reservation.put()
+        resource.reserve_times+=1
+        resource.put()
+        reservation.put()
         self.redirect('/')
 
 
@@ -164,7 +172,7 @@ class ResourcePage(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
-        reservations = reservations = Reservation.query(Reservation.resource_name == resource.resource_name)
+        reservations = Reservation.query(Reservation.resource_name == resource.resource_name)
         if user:
             email = user.email()
         else:
@@ -254,10 +262,36 @@ class RSSPage(webapp2.RequestHandler):
         </rss>'''
         self.response.write(RSS)
 
+class SearchPage(webapp2.RequestHandler):
+    def get(self):
+        resource=Resource.query(Resource.resource_name==self.request.get('resource_name')).get()
+        if resource:
+            query_params = {'resource_name':self.request.get('resource_name')}
+            self.redirect('/?' + urllib.urlencode(query_params))
+        else:
+            template_values = {
+                'error_message': 'This resource dosn\'t exsit :)',
+                'url': '/',
+                'url_linktext': 'go to landing page'
+            }
+            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            self.response.write(template.render(template_values))
+
+class Image(webapp2.RequestHandler):
+    def get(self):
+        key = ndb.Key(urlsafe=self.request.get('img_id'))
+        resource = key.get()
+        if resource.img:
+            self.response.headers['Content-Type'] = 'image/png'
+            self.response.out.write(resource.img)
+        else:
+            self.response.out.write('No image')
+
+
 class MainHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
-        resources = Resource.query().order(Resource.last_reserve_time)
+        resources = Resource.query().order(-Resource.last_reserve_time)
         deleteOutDateReservation()
         reservations = []
         myresources = []
@@ -265,7 +299,7 @@ class MainHandler(webapp2.RequestHandler):
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
             myresources = Resource.query(Resource.owner == user.email())
-            reservations = Reservation.query(Reservation.user == user.email()).order(-Reservation.start_datetime)
+            reservations = Reservation.query(Reservation.user == user.email()).order(Reservation.start_datetime)
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
@@ -295,4 +329,6 @@ app = webapp2.WSGIApplication([
     ('/user', UserPage),
     ('/tag',TagPage),
     ('/RSS',RSSPage),
+    ('/search',SearchPage),
+    ('/img',Image),
 ], debug=True)

@@ -3,16 +3,22 @@
 <head>
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
     <meta charset="UTF-8">
-    <title>Resource Page of {{reservations.resource_name}}</title>
+    <title>Resource Page of {{resource.resource_name}}</title>
 </head>
-<h1>Resource Page of {{reservations.resource_name}}</h1>
-Tags:
-{% for tag in resource.tags %}
-<a href="/tag?tag={{tag}}">{{tag}}</a>
-{% endfor %}
-<br>
-<a href="/RSS?resource_name={{resource.resource_name}}">Dump this resource to RSS</a>
+<h1>Resource Page of {{resource.resource_name}}</h1>
 <section1>
+    Tags:
+    {% for tag in resource.tags %}
+    <a href="/tag?tag={{tag}}">{{tag}}</a>&nbsp
+    {% endfor %}
+    <br>
+    <a href="/RSS?resource_name={{resource.resource_name}}">Dump this resource to RSS</a>
+    <br>
+    Total reservation times: {{resource.reserve_times}}
+    <hr>
+    <div><img src="/img?img_id={{resource.key.urlsafe()}}"></img></div>
+    Description: {{resource.description}}
+    <hr>
     {% for reservation in reservations %}
         {{reservation.user}}
         {{reservation.resource_name}}
