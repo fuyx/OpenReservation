@@ -17,7 +17,8 @@
     Total reservation times: {{resource.reserve_times}}
     <hr>
     <div><img src="/img?img_id={{resource.key.urlsafe()}}"></img></div>
-    Description: {{resource.description}}
+    Description: {{resource.description}}<br>
+    Last reserve time:{{resource.last_reserve_time.strftime("%m/%d/%y,%H:%M:%S")}}
     <hr>
     {% for reservation in reservations %}
         {{reservation.user}}

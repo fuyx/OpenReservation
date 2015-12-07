@@ -1,0 +1,5 @@
+cron:
+
+- description: check reservation everyminute
+  url: /checkreservation
+  schedul: every 1 minutes

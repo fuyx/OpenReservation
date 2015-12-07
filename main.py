@@ -130,13 +130,15 @@ class AddReservResult(webapp2.RequestHandler):
         reservation.resource_name = self.request.get('resource_name')
         reservation.user = user.email()
         reservation.start_datetime = getDatetime(start)
-        reservation.start_datetime_string = reservation.start_datetime.strftime("%m/%d/%y,%H:%M:%S")
+        reservation.start_datetime_string = reservation.start_datetime.strftime("%m/%d/%y,%H:%M")
         reservation.end_datetime = getDatetime(end)
+        reservation.end_datetime_string = reservation.end_datetime.strftime("%m/%d/%y,%H:%M:")
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
         resource.last_reserve_time = datetime.now()
         resource.reserve_times+=1
         resource.put()
-        reservation.put()
+        key=reservation.put()
+        send_reserve_confirmation(user.email(),key.get())
         self.redirect('/')
 
 
@@ -241,25 +243,7 @@ class RSSPage(webapp2.RequestHandler):
         resource_name=self.request.get('resource_name')
         reservations=Reservation.query(Reservation.resource_name==resource_name)
         dt=datetime.now().strftime("%a, %d %b %Y %H:%M:%S %z")
-        RSS='''
-        <?xml version="1.0" encoding="UTF-8" ?>
-        <rss version="2.0">
-        <resource>
-         <name>%s</name>
-         <description>This is all the reservations of %s in RSS format</description>
-         <lastBuildDate>%s</lastBuildDate>
-         <pubDate>%s</pubDate>
-         <ttl>1800</ttl>''' % (resource_name,resource_name,dt,dt)
-        for reservation in reservations:
-            RSS+='''
-            <reservation>
-             <user>%s</user>
-             <starttime>%s</starttime>
-             <endtime>%s</endttime>
-            </reservation>''' % (reservation.user,reservation.start_datetime_string,reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S"))
-        RSS+='''
-        </resource>
-        </rss>'''
+        RSS=genRSS(reservations,resource_name,dt)
         self.response.write(RSS)
 
 class SearchPage(webapp2.RequestHandler):
@@ -287,6 +271,10 @@ class Image(webapp2.RequestHandler):
         else:
             self.response.out.write('No image')
 
+class CheckReservation(webapp2.RequestHandler):
+    def get(self):
+        checkReservation()
+        self.redirect('/')
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -311,6 +299,7 @@ class MainHandler(webapp2.RequestHandler):
             'url': url,
             'url_linktext': url_linktext,
             'isIndex': True,
+            'dt':datetime.now().strftime("%m/%d/%y,%H:%M:%S"),
         }
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
@@ -331,4 +320,5 @@ app = webapp2.WSGIApplication([
     ('/RSS',RSSPage),
     ('/search',SearchPage),
     ('/img',Image),
+    ('/checkreservation',CheckReservation),
 ], debug=True)

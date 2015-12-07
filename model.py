@@ -18,3 +18,4 @@ class Reservation(ndb.Model):
     start_datetime = ndb.DateTimeProperty(required=True)
     end_datetime = ndb.DateTimeProperty(required=True)
     start_datetime_string = ndb.StringProperty(required=True)
+    end_datetime_string = ndb.StringProperty(required=True)
