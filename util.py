@@ -86,16 +86,29 @@ The Open Reservation Team
 ''' % (reservation.user,reservation.resource_name,reservation.start_datetime_string,reservation.end_datetime_string))
 
 
+# def checkReservation():
+#     reservations=Reservation.query(Reservation.start_datetime.strftime("%m/%d/%y,%H:%M")==datetime.now().strftime("%m/%d/%y,%H:%M"))
+#     for reservation in reservations:
+#         mail.send_mail(sender="Open Reservation Team",
+#                        to=reservation.user,
+#                        subject='Reservation Start Notification',
+#                        body='''
+# Dear %s:
+#
+# Your reservation of %s starts now!
+#
+# The Open Reservation Team
+# ''' % (reservation.user,reservation.resource_name))
 def checkReservation():
-    reservations=Reservation.query(Reservation.start_datetime_string==datetime.now().strftime("%m/%d/%y,%H:%M"))
+    reservations=Reservation.query(Reservation.resource_name=='GTR')
     for reservation in reservations:
         mail.send_mail(sender="Open Reservation Team",
                        to=reservation.user,
-                       subject='Reservation Auto Confirmation',
+                       subject='Reservation Start Notification',
                        body='''
 Dear %s:
 
 Your reservation of %s starts now!
 
 The Open Reservation Team
-''' % (reservation.user,reservation.resource_name))
+'''(reservation.user,reservation.resource_name))

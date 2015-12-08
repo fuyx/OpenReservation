@@ -2,4 +2,4 @@ cron:
 
 - description: check reservation everyminute
   url: /checkreservation
-  schedul: every 1 minutes
+  schedule: every 1 minutes
