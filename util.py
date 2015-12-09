@@ -2,6 +2,7 @@ from google.appengine.api import mail
 from datetime import time, datetime
 from model import Reservation
 from google.appengine.api.background_thread import background_thread
+import pytz
 
 def getTime(hour, min):
     return time(int(hour), int(min))
@@ -36,23 +37,24 @@ def checkResourceTime(start, end, res_start, res_end):
         return False
 
 
-def checkReservationConflict(resname,dt_start,dt_end):
-    reservations=Reservation.query(Reservation.resource_name==resname).order(Reservation.start_datetime)
-    prev_end_time=None
-    last_reservation=None
+def checkReservationConflict(resname, dt_start, dt_end):
+    reservations = Reservation.query(Reservation.resource_name == resname).order(Reservation.start_datetime)
+    prev_end_time = None
+    last_reservation = None
     for reservation in reservations:
-        if dt_end<=reservation.start_datetime:
-            if prev_end_time is None or dt_start>=prev_end_time:
+        if dt_end <= reservation.start_datetime:
+            if prev_end_time is None or dt_start >= prev_end_time:
                 return True
             else:
                 return False
-        last_reservation=reservation
-    if last_reservation is None or dt_start>=last_reservation.end_datetime:
+        last_reservation = reservation
+    if last_reservation is None or dt_start >= last_reservation.end_datetime:
         return True
     return False
 
-def genRSS(reservations,resource_name,dt):
-    RSS='''
+
+def genRSS(reservations, resource_name, dt):
+    RSS = '''
 <?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <resource>
@@ -60,20 +62,22 @@ def genRSS(reservations,resource_name,dt):
  <description>This is all the reservations of %s in RSS format</description>
  <lastBuildDate>%s</lastBuildDate>
  <pubDate>%s</pubDate>
- <ttl>1800</ttl>''' % (resource_name,resource_name,dt,dt)
+ <ttl>1800</ttl>''' % (resource_name, resource_name, dt, dt)
     for reservation in reservations:
-        RSS+='''
+        RSS += '''
  <reservation>
   <user>%s</user>
   <starttime>%s</starttime>
   <endtime>%s</endttime>
- </reservation>''' % (reservation.user,reservation.start_datetime_string,reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S"))
-    RSS+='''
+ </reservation>''' % (
+        reservation.user, reservation.start_datetime_string, reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S"))
+    RSS += '''
 </resource>
 </rss>'''
     return RSS
 
-def send_reserve_confirmation(address,reservation):
+
+def send_reserve_confirmation(address, reservation):
     mail.send_mail(sender="Open Reservation Team <easonfu1994@gmail.com>",
                    to=address,
                    subject='Reservation Auto Confirmation',
@@ -83,7 +87,7 @@ Dear %s:
 You've already reserve %s from %s to %s :)
 
 The Open Reservation Team
-''' % (reservation.user,reservation.resource_name,reservation.start_datetime_string,reservation.end_datetime_string))
+''' % (reservation.user, reservation.resource_name, reservation.start_datetime_string, reservation.end_datetime_string))
 
 
 # def checkReservation():
@@ -100,9 +104,10 @@ The Open Reservation Team
 # The Open Reservation Team
 # ''' % (reservation.user,reservation.resource_name))
 def checkReservation():
-    reservations=Reservation.query(Reservation.start_datetime_string==datetime.now().strftime("%m/%d/%y,%H:%M"))
+    reservations = Reservation.query(
+        Reservation.start_datetime_string == getCurrentDatetime().strftime("%m/%d/%y,%H:%M"))
     for reservation in reservations:
-        mail.send_mail(sender="Open Reservation Team",
+        mail.send_mail(sender="Open Reservation Team <easonfu1994@gmail.com>",
                        to=reservation.user,
                        subject='Reservation Start Notification',
                        body='''
@@ -111,4 +116,9 @@ Dear %s:
 Your reservation of %s starts now!
 
 The Open Reservation Team
-''' % (reservation.user,reservation.resource_name))
+''' % (reservation.user, reservation.resource_name))
+
+# get current time from utc
+def getCurrentDatetime():
+    return datetime.now().replace(tzinfo = pytz.FixedOffset(+300)).astimezone(pytz.timezone('utc'))
+

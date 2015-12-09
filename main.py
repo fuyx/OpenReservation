@@ -134,7 +134,7 @@ class AddReservResult(webapp2.RequestHandler):
         reservation.end_datetime = getDatetime(end)
         reservation.end_datetime_string = reservation.end_datetime.strftime("%m/%d/%y,%H:%M")
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
-        resource.last_reserve_time = datetime.now()
+        resource.last_reserve_time = getCurrentDatetime()
         resource.reserve_times+=1
         resource.put()
         key=reservation.put()
@@ -242,7 +242,7 @@ class RSSPage(webapp2.RequestHandler):
     def get(self):
         resource_name=self.request.get('resource_name')
         reservations=Reservation.query(Reservation.resource_name==resource_name)
-        dt=datetime.now().strftime("%a, %d %b %Y %H:%M:%S %z")
+        dt=getCurrentDatetime().strftime("%a, %d %b %Y %H:%M:%S %z")
         RSS=genRSS(reservations,resource_name,dt)
         self.response.write(RSS)
 
@@ -298,7 +298,7 @@ class MainHandler(webapp2.RequestHandler):
             'url': url,
             'url_linktext': url_linktext,
             'isIndex': True,
-            'dt':datetime.now().strftime("%m/%d/%y,%H:%M"),
+            'dt':getCurrentDatetime().strftime("%m/%d/%y,%H:%M"),
         }
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
