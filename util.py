@@ -74,7 +74,7 @@ def genRSS(reservations,resource_name,dt):
     return RSS
 
 def send_reserve_confirmation(address,reservation):
-    mail.send_mail(sender="Open Reservation Team",
+    mail.send_mail(sender="Open Reservation Team <easonfu1994@gmail.com>",
                    to=address,
                    subject='Reservation Auto Confirmation',
                    body='''
@@ -100,7 +100,7 @@ The Open Reservation Team
 # The Open Reservation Team
 # ''' % (reservation.user,reservation.resource_name))
 def checkReservation():
-    reservations=Reservation.query(Reservation.resource_name=='GTR')
+    reservations=Reservation.query(Reservation.start_datetime_string==datetime.now().strftime("%m/%d/%y,%H:%M"))
     for reservation in reservations:
         mail.send_mail(sender="Open Reservation Team",
                        to=reservation.user,
@@ -111,4 +111,4 @@ Dear %s:
 Your reservation of %s starts now!
 
 The Open Reservation Team
-'''(reservation.user,reservation.resource_name))
+''' % (reservation.user,reservation.resource_name))

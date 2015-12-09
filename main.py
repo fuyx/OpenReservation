@@ -132,7 +132,7 @@ class AddReservResult(webapp2.RequestHandler):
         reservation.start_datetime = getDatetime(start)
         reservation.start_datetime_string = reservation.start_datetime.strftime("%m/%d/%y,%H:%M")
         reservation.end_datetime = getDatetime(end)
-        reservation.end_datetime_string = reservation.end_datetime.strftime("%m/%d/%y,%H:%M:")
+        reservation.end_datetime_string = reservation.end_datetime.strftime("%m/%d/%y,%H:%M")
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
         resource.last_reserve_time = datetime.now()
         resource.reserve_times+=1
@@ -251,7 +251,7 @@ class SearchPage(webapp2.RequestHandler):
         resource=Resource.query(Resource.resource_name==self.request.get('resource_name')).get()
         if resource:
             query_params = {'resource_name':self.request.get('resource_name')}
-            self.redirect('/?' + urllib.urlencode(query_params))
+            self.redirect('/resource?' + urllib.urlencode(query_params))
         else:
             template_values = {
                 'error_message': 'This resource dosn\'t exsit :)',
@@ -274,7 +274,6 @@ class Image(webapp2.RequestHandler):
 class CheckReservation(webapp2.RequestHandler):
     def get(self):
         checkReservation()
-        self.redirect('/')
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -299,7 +298,7 @@ class MainHandler(webapp2.RequestHandler):
             'url': url,
             'url_linktext': url_linktext,
             'isIndex': True,
-            'dt':datetime.now().strftime("%m/%d/%y,%H:%M:%S"),
+            'dt':datetime.now().strftime("%m/%d/%y,%H:%M"),
         }
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))

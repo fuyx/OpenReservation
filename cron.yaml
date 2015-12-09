@@ -1,5 +1,4 @@
 cron:
-
-- description: check reservation everyminute
+- description: send notification
   url: /checkreservation
   schedule: every 1 minutes
