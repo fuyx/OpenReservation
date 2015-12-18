@@ -25,3 +25,9 @@ indexes:
   - name: user
   - name: start_datetime
     direction: desc
+
+- kind: Resource
+  properties:
+  - name: owner
+  - name: last_reserve_time
+    direction: desc

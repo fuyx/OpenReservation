@@ -139,6 +139,8 @@ h6, .h6 {
 
 .or-resource {
     margin-bottom: 30px;
+    min-height:200px;
+    height:auto;
 }
 
 .or-res-title {

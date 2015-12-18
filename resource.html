@@ -38,8 +38,9 @@
                     {% endfor %}
                     <br>
                 </p>
-
+                {% if hasImg %}
                 <div><img src="/img?img_id={{resource.key.urlsafe()}}"></img></div>
+                {% endif %}
                 {{resource.description}}<br>
                 <hr>
             </div>
@@ -94,6 +95,13 @@
         {% endif %}
     </div>
 </div>
+<footer class="or-footer">
+    <p>Website build by yf899@nyu.edu</p>
+
+    <p>
+        <a href="#">Back to top</a>
+    </p>
+</footer>
 </body>
 </html>
 {% endautoescape %}

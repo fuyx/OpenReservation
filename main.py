@@ -1,4 +1,3 @@
-
 from model import *
 from util import *
 import os
@@ -71,21 +70,35 @@ class AddResResult(webapp2.RequestHandler):
             return
         # resource.available_time_start=self.request.get('bdaytime')
         resource.tags = self.request.POST.getall('tags')
-        img=self.request.get('img')
+        img = self.request.get('img')
         if img:
-            img=images.resize(img,180,180)
-            resource.img=img
-        resource.description=self.request.get('description')
-        resource.description=self.request.get('description')
+            img = images.resize(img, 180, 180)
+            resource.img = img
+        resource.description = self.request.get('description')
+        resource.description = self.request.get('description')
         resource.put()
         self.redirect('/')
+
 
 class AddReservation(webapp2.RequestHandler):
     def get(self):
         resource_name = self.request.get('resource_name')
         user = users.get_current_user()
-        resource=Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
-        time_range=resource.available_time_start.strftime("%H:%M")+" to "+resource.available_time_end.strftime("%H:%M")
+        resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
+        time_range = ""
+        try:
+            time_range = resource.available_time_start.strftime(
+                "%H:%M") + " to " + resource.available_time_end.strftime(
+                "%H:%M")
+        except:
+            template_values = {
+                'error_message': 'No such resource.',
+                'url': '/',
+                'url_linktext': 'go to landing page',
+            }
+            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            self.response.write(template.render(template_values))
+            return
         if user:
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
@@ -96,10 +109,11 @@ class AddReservation(webapp2.RequestHandler):
             'resource_name': resource_name,
             'url': url,
             'url_linktext': url_linktext,
-            'time':time_range,
+            'time': time_range,
         }
         template = JINJA_ENVIRONMENT.get_template('add_reservation.html')
         self.response.write(template.render(template_values))
+
 
 class AddReservResult(webapp2.RequestHandler):
     def post(self):
@@ -124,7 +138,7 @@ class AddReservResult(webapp2.RequestHandler):
             template = JINJA_ENVIRONMENT.get_template('erro.html')
             self.response.write(template.render(template_values))
             return
-        if not checkReservationConflict(self.request.get('resource_name'),getDatetime(start), getDatetime(end)):
+        if not checkReservationConflict(self.request.get('resource_name'), getDatetime(start), getDatetime(end)):
             template_values = {
                 'error_message': 'There is another reservation in the time range.\nPlease try another time :)',
                 'url': '/addreservation?resource_name=' + self.request.get('resource_name'),
@@ -143,10 +157,10 @@ class AddReservResult(webapp2.RequestHandler):
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
         # resource.last_reserve_time = datetime.now()
         resource.last_reserve_time = getCurrentDatetime().strftime("%m/%d/%y,%H:%M")
-        resource.reserve_times+=1
+        resource.reserve_times += 1
         resource.put()
-        key=reservation.put()
-        send_reserve_confirmation(user.email(),key.get())
+        key = reservation.put()
+        send_reserve_confirmation(user.email(), key.get())
         self.redirect('/')
 
 
@@ -157,7 +171,7 @@ class DeleteReservation(webapp2.RequestHandler):
                                                 Reservation.start_datetime_string == self.request.get(
                                                     'start_datetime_string'))).get()
         try:
-            if reservation.user == user.email(): # make sure current user is the owner
+            if reservation.user == user.email():  # make sure current user is the owner
                 reservation.key.delete()
                 self.redirect('/')
             else:
@@ -170,7 +184,7 @@ class DeleteReservation(webapp2.RequestHandler):
                 self.response.write(template.render(template_values))
         except:
             template_values = {
-                'error_message': 'This reservation is already deleted :)',
+                'error_message': 'This reservation is already deleted.',
                 'url': '/',
                 'url_linktext': 'go to landing page'
             }
@@ -182,7 +196,18 @@ class ResourcePage(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
-        reservations = Reservation.query(Reservation.resource_name == resource.resource_name)
+        reservations = []
+        try:
+            reservations = Reservation.query(Reservation.resource_name == resource.resource_name)
+        except:
+            template_values = {
+                'error_message': 'No such resource.',
+                'url': '/',
+                'url_linktext': 'go to landing page',
+            }
+            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            self.response.write(template.render(template_values))
+            return
         if user:
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
@@ -191,12 +216,16 @@ class ResourcePage(webapp2.RequestHandler):
             email = ''
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
+        hasImg = False
+        if resource.img:
+            hasImg = True
         template_values = {
             'resource': resource,
             'reservations': reservations,
             'user': email,
             'url': url,
             'url_linktext': url_linktext,
+            'hasImg': hasImg,
         }
         template = JINJA_ENVIRONMENT.get_template('resource.html')
         self.response.write(template.render(template_values))
@@ -217,7 +246,6 @@ class ChangeResource(webapp2.RequestHandler):
 class UserPage(webapp2.RequestHandler):
     def get(self):
         user = self.request.get('user')
-        resource = Resource.query(Resource.owner == user)
         deleteOutDateReservation()
         reservations = Reservation.query().order(-Reservation.start_datetime)
         resources = Resource.query(Resource.owner == user)
@@ -225,35 +253,47 @@ class UserPage(webapp2.RequestHandler):
             'myresources': resources,
             'reservations': reservations,
             'isIndex': False,
-            'user':user,
+            'user': user,
         }
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 
+
 class TagPage(webapp2.RequestHandler):
     def get(self):
-        tag=self.request.get('tag')
-        resources=Resource.query(Resource.tags==tag)
+        user = self.request.get('user')
+        tag = self.request.get('tag')
+        resources = Resource.query(Resource.tags == tag)
+        if user:
+            url = users.create_logout_url(self.request.uri)
+            url_linktext = 'Logout'
+        else:
+            url = users.create_login_url(self.request.uri)
+            url_linktext = 'Login'
         template_values = {
-            'resources':resources,
-            'tag':tag
+            'resources': resources,
+            'tag': tag,
+            'url': url,
+            'url_linktext': url_linktext,
         }
         template = JINJA_ENVIRONMENT.get_template('tag.html')
         self.response.write(template.render(template_values))
 
+
 class RSSPage(webapp2.RequestHandler):
     def get(self):
-        resource_name=self.request.get('resource_name')
-        reservations=Reservation.query(Reservation.resource_name==resource_name)
-        dt=getCurrentDatetime().strftime("%a, %d %b %Y %H:%M:%S %z")
-        RSS=genRSS(reservations,resource_name,dt)
+        resource_name = self.request.get('resource_name')
+        reservations = Reservation.query(Reservation.resource_name == resource_name)
+        dt = getCurrentDatetime().strftime("%a, %d %b %Y %H:%M:%S %z")
+        RSS = genRSS(reservations, resource_name, dt)
         self.response.write(RSS)
+
 
 class SearchPage(webapp2.RequestHandler):
     def get(self):
-        resource=Resource.query(Resource.resource_name==self.request.get('resource_name')).get()
+        resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
         if resource:
-            query_params = {'resource_name':self.request.get('resource_name')}
+            query_params = {'resource_name': self.request.get('resource_name')}
             self.redirect('/resource?' + urllib.urlencode(query_params))
         else:
             template_values = {
@@ -264,19 +304,22 @@ class SearchPage(webapp2.RequestHandler):
             template = JINJA_ENVIRONMENT.get_template('erro.html')
             self.response.write(template.render(template_values))
 
+
 class Image(webapp2.RequestHandler):
     def get(self):
+        # if self.request.get('img_id')=='default':
+
         key = ndb.Key(urlsafe=self.request.get('img_id'))
         resource = key.get()
         if resource.img:
             self.response.headers['Content-Type'] = 'image/png'
             self.response.out.write(resource.img)
-        else:
-            self.response.out.write('No image')
+
 
 class CheckReservation(webapp2.RequestHandler):
     def get(self):
         checkReservation()
+
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -285,14 +328,18 @@ class MainHandler(webapp2.RequestHandler):
         deleteOutDateReservation()
         reservations = []
         myresources = []
+        hasRes = True
         if user:
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
-            myresources = Resource.query(Resource.owner == user.email())
+            myresources = Resource.query(Resource.owner == user.email()).order(-Resource.last_reserve_time)
             reservations = Reservation.query(Reservation.user == user.email()).order(Reservation.start_datetime)
+            if not myresources.get():
+                hasRes = False
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
+            hasRes = False
         template_values = {
             'user': user,
             'resources': resources,
@@ -301,7 +348,8 @@ class MainHandler(webapp2.RequestHandler):
             'url': url,
             'url_linktext': url_linktext,
             'isIndex': True,
-            'dt':getCurrentDatetime().strftime("%m/%d/%y,%H:%M"),
+            'dt': getCurrentDatetime().strftime("%m/%d/%y,%H:%M"),
+            'hasRes': hasRes,
         }
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
@@ -317,9 +365,9 @@ app = webapp2.WSGIApplication([
     ('/resource', ResourcePage),
     ('/resource/change', ChangeResource),
     ('/user', UserPage),
-    ('/tag',TagPage),
-    ('/RSS',RSSPage),
-    ('/search',SearchPage),
-    ('/img',Image),
-    ('/checkreservation',CheckReservation),
+    ('/tag', TagPage),
+    ('/RSS', RSSPage),
+    ('/search', SearchPage),
+    ('/img', Image),
+    ('/checkreservation', CheckReservation),
 ], debug=True)
