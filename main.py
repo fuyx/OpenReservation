@@ -75,8 +75,7 @@ class AddResResult(webapp2.RequestHandler):
         if img:
             img=images.resize(img,180,180)
             resource.img=img
-        if self.request.get('description'):
-            resource.description=self.request.get('description')
+        resource.description=self.request.get('description')
         resource.description=self.request.get('description')
         resource.put()
         self.redirect('/')
@@ -142,6 +141,7 @@ class AddReservResult(webapp2.RequestHandler):
         reservation.end_datetime = getDatetime(end)
         reservation.end_datetime_string = reservation.end_datetime.strftime("%m/%d/%y,%H:%M")
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
+        # resource.last_reserve_time = datetime.now()
         resource.last_reserve_time = getCurrentDatetime().strftime("%m/%d/%y,%H:%M")
         resource.reserve_times+=1
         resource.put()
@@ -209,18 +209,9 @@ class ChangeResource(webapp2.RequestHandler):
             resource.resource_name = self.request.get('resname')
             resource.available_time_start = getTime(self.request.get('stime'))
             resource.available_time_end = getTime(self.request.get('etime'))
-            resource.tags = self.request.POST.getall('tags')
+            resource.tags = removeNullTags(self.request.POST.getall('tags'))
             resource.put()
         self.redirect('/')
-
-class ReservationPage(webapp2.RequestHandler):
-    def get(self):
-        reservation = Reservation.query(Reservation.resource_name == self.request.get('resource_name')).get()
-        template_values = {
-            'reservation': reservation,
-        }
-        template = JINJA_ENVIRONMENT.get_template('reservation.html')
-        self.response.write(template.render(template_values))
 
 
 class UserPage(webapp2.RequestHandler):
@@ -325,7 +316,6 @@ app = webapp2.WSGIApplication([
     ('/deletereservation', DeleteReservation),
     ('/resource', ResourcePage),
     ('/resource/change', ChangeResource),
-    ('/reservation', ReservationPage),
     ('/user', UserPage),
     ('/tag',TagPage),
     ('/RSS',RSSPage),

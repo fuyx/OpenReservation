@@ -5,18 +5,21 @@ from model import Reservation
 from google.appengine.api.background_thread import background_thread
 import pytz
 
+
 # convert input time string to time format
 def getTime(time):
-    st=time.split(':')
+    st = time.split(':')
     return datetime.time(int(st[0]), int(st[1]))
     # return datetime.time(10,1)
 
+
 # convert datetime string to datetime list
 def getDatetimeList(dt):
-    tmp=dt.split("T")
-    date=tmp[0].strip().split("-")
-    time=tmp[1].strip().split(":")
-    return [date[0].strip(),date[1].strip(),date[2].strip(),time[0].strip(),time[1].strip()]
+    tmp = dt.split("T")
+    date = tmp[0].strip().split("-")
+    time = tmp[1].strip().split(":")
+    return [date[0].strip(), date[1].strip(), date[2].strip(), time[0].strip(), time[1].strip()]
+
 
 # convert datetime list to datetime format
 def getDatetime(dt):
@@ -30,8 +33,17 @@ def isEqual(s1, s2=''):
         return False
 
 
+def removeNullTags(tags):
+    result = []
+    for tag in tags:
+        if not tag == "":
+            result.append(tag)
+    return result;
+
+
+# delete all the out-dated reservations
 def deleteOutDateReservation():
-    out_date_res = Reservation.query(Reservation.end_datetime < datetime.datetime.now())
+    out_date_res = Reservation.query(Reservation.end_datetime < getCurrentDatetime())
     for reservation in out_date_res:
         reservation.key.delete()
 
@@ -81,7 +93,7 @@ def genRSS(reservations, resource_name, dt):
   <starttime>%s</starttime>
   <endtime>%s</endttime>
  </reservation>''' % (
-        reservation.user, reservation.start_datetime_string, reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S"))
+            reservation.user, reservation.start_datetime_string, reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S"))
     RSS += '''
 </resource>
 </rss>'''
@@ -129,7 +141,7 @@ Your reservation of %s starts now!
 The Open Reservation Team
 ''' % (reservation.user, reservation.resource_name))
 
+
 # get EST time from utc
 def getCurrentDatetime():
-    return datetime.datetime.now().replace(tzinfo = pytz.FixedOffset(+300)).astimezone(pytz.timezone('utc'))
-
+    return datetime.datetime.now().replace(tzinfo=pytz.FixedOffset(+300)).astimezone(pytz.timezone('utc'))

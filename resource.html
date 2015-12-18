@@ -2,8 +2,8 @@
 <html lang="en">
 {% autoescape true %}
 <head>
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
     <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Resource Page of {{resource.resource_name}}</title>
@@ -22,20 +22,21 @@
     <div class="or-header">
         <h1 class="or-title">Resource Page of {{resource.resource_name}}</h1>
     </div>
+    <br>
+
     <div class="row">
         <div class="col-sm-8 or-main">
             <div class="or-resource">
-
-                <a href="/addreservation?resource_name={{resource.resource_name}}">Reserve {{resource.resource_name}}</a><br>
+                <a href="/addreservation?resource_name={{resource.resource_name}}">Reserve
+                    {{resource.resource_name}}</a><br>
                 <a href="/RSS?resource_name={{resource.resource_name}}">Dump this resource to RSS</a><br>
 
-                <p>Total reservation times: {{resource.reserve_times}}<br>
+                <p>Reserved times: {{resource.reserve_times}}<br>
                     Tags:
                     {% for tag in resource.tags %}
                     <a href="/tag?tag={{tag}}">{{tag}}</a>
                     {% endfor %}
                     <br>
-                    Last reserve time:{{resource.last_reserve_time}}<br>
                 </p>
 
                 <div><img src="/img?img_id={{resource.key.urlsafe()}}"></img></div>
@@ -49,7 +50,8 @@
                     to {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}</a>
                 <br>
 
-                <p class="or-res-name"></a>made by <a href="/user?user={{reservation.user}}">{{reservation.user}}</a>
+                <p class="or-res-name"></a>made by <a
+                        href="/user?user={{reservation.user}}">{{reservation.user}}</a>
                 </p>
                 <hr>
                 {% endfor %}
@@ -73,11 +75,13 @@
                     </div>
                     <div class="form-group">
                         <label>Avalibale end time:</label><br>
-                        <input type="time" name="etime" value={{resource.available_time_end.strftime("%H:%M:%S")}}><br>
+                        <input type="time" name="etime"
+                               value={{resource.available_time_end.strftime("%H:%M:%S")}}><br>
                     </div>
                     <div id="tags" class="form-group">
                         <label>Tags:</label>
-                        <input type="button" class="btn btn-default" value="add tags" onclick="addTags('tags');"><br>
+                        <input type="button" class="btn btn-default" value="add tags"
+                               onclick="addTags('tags');"><br>
                         {% for tag in resource.tags %}
                         <input type="text" name="tags" value={{tag}}><br>
                         {% endfor %}

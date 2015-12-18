@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
 {% autoescape true %}
 <head>
     <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,7 +11,6 @@
     <title>User Page: {{user}}</title>
     {% endif %}
 </head>
-<body>
 <div class="or-masthead">
     <div class="container">
         <nav class="or-nav">
@@ -43,19 +41,21 @@
                     to {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}</a>
                 <br>
 
-                <p class="or-res-name"></a>made by <a href="/user?user={{reservation.user}}">{{reservation.user}}</a>
+                <p class="or-res-name"></a> reserve made by <a href="/user?user={{reservation.user}}">{{reservation.user}}</a>
                 </p>
                 {% if isIndex %}
                 <button class="btn btn-danger"
-                        src="/deletereservation?resource_name={{reservation.resource_name}}&start_datetime_string={{reservation.start_datetime_string}}">
-                    delete
+                        src="/deletereservation?resource_name={{reservation.resource_name}}&start_datetime_string={{reservation.start_datetime_string}}">delete
                 </button>
                 {% endif %}
                 <br>
                 <hr>
                 {% endfor %}
             </div>
-            <div class="or-resource">
+            <div class="or-post">
+
+            </div>
+            <div class="or-post">
                 <h2 class="or-res-title">Your Resources:</h2>
                 {% for resource in myresources %}
                 <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
@@ -71,7 +71,7 @@
                     <input type="submit" class="btn btn-default" value="search">
                 </form>
             </div>
-            <div class="sidebar-module">
+            <div class="sidebar-module-res">
                 <h4>Resources</h4>
 
                 <div class="list-group">
@@ -84,10 +84,9 @@
                     {% endfor %}
                 </div>
             </div>
+            </html>
         </div>
         {% endif %}
     </div>
 </div>
-</body>
-</html>
 {% endautoescape %}
