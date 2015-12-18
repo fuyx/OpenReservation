@@ -5,8 +5,17 @@ api_version: 1
 threadsafe: yes
 
 handlers:
+- url: /dist
+  static_dir: dist
+
 - url: /stylesheets
   static_dir: stylesheets
+
+- url: /js
+  static_dir: js
+
+- url: /pictures
+  static_dir: pictures
 
 - url: /.*
   script: main.app

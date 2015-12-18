@@ -1,7 +1,10 @@
 <!DOCTYPE html>
+<html lang="en">
 {% autoescape true %}
 <head>
-    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
+    <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     {% if isIndex %}
     <title>Open Reservation</title>
@@ -9,63 +12,82 @@
     <title>User Page: {{user}}</title>
     {% endif %}
 </head>
-{% if isIndex %}
-<h1>Welcome to Open Reservation! {{dt}}</h1>
-{% else %}
-<h1>Information about {{user}}</h1>
-{% endif %}
-{% if isIndex %}
-<section1>
-    {% for resource in resources %}
-        <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
-        {{resource.owner}}
-        {{resource.available_time_start.strftime("%H:%M:%S")}}
-        {{resource.available_time_end.strftime("%H:%M:%S")}}
-        {% for tag in resource.tags %}
-            {{tag}}
-        {% endfor %}
-        <hr>
-    {% endfor %}
-    <a href="/addresource">add a new resource!</a>
-    <br>
-    <a href="{{ url|safe }}">{{ url_linktext }}</a>
-</section1>
-{% endif %}
-{%if isIndex%}
-<section2>
-{% else %}
-<section1>
-{% endif %}
-    <form action="/search" method="get">
-        <input type="text" name="resource_name">
-        <input type="submit" value="search">
-    </form>
-    {% for reservation in reservations %}
-        {{reservation.user}}
-        {{reservation.resource_name}}
-        <a href="/reservation?resource_name={{reservation.resource_name}}">{{reservation.start_datetime.strftime("%m/%d/%y,%H:%M:%S")}} to {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}</a>
-        <a href="/deletereservation?resource_name={{reservation.resource_name}}&start_datetime_string={{reservation.start_datetime_string}}">delete</a>
-        <hr>
-    {% endfor %}
-{%if isIndex%}
-</section2>
-{% else %}
-</section1>
-{% endif %}
+<body>
+<div class="or-masthead">
+    <div class="container">
+        <nav class="or-nav">
+            <a class="or-nav-item active" href="/">Home</a>
+            <a class="or-nav-item" href="/addresource">Add Resources</a>
+            <a class="or-nav-item" href={{url}}>{{url_linktext}}</a>
+        </nav>
+    </div>
+</div>
+<div class="container">
+    {% if isIndex %}
+    <div class="or-header">
+        <h1 class="or-title">Open Reservation</h1>
+    </div>
+    {% else %}
+    <div class="or-header">
+        <h1 class="or-title">Information about {{user}}</h1>
+    </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-sm-8 or-main">
+            <div class="or-resource">
+                <h2 class="or-res-title">Your Reservations:</h2>
+                {% for reservation in reservations %}
+                <a href="/resource?resource_name={{reservation.resource_name}}">{{reservation.resource_name}}</a>
+                <br>
+                <a href="/reservation?resource_name={{reservation.resource_name}}">{{reservation.start_datetime.strftime("%m/%d/%y,%H:%M:%S")}}
+                    to {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}</a>
+                <br>
 
-{%if isIndex%}
-<section3>
-{% else %}
-<section2>
-{% endif %}
-    {% for resource in myresources %}
-        <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
-        <hr>
-    {% endfor %}
-{%if isIndex%}
-</section3>
-{% else %}
-</section2>
-{% endif %}
+                <p class="or-res-name"></a>made by <a href="/user?user={{reservation.user}}">{{reservation.user}}</a>
+                </p>
+                {% if isIndex %}
+                <button class="btn btn-danger"
+                        src="/deletereservation?resource_name={{reservation.resource_name}}&start_datetime_string={{reservation.start_datetime_string}}">
+                    delete
+                </button>
+                {% endif %}
+                <br>
+                <hr>
+                {% endfor %}
+            </div>
+            <div class="or-resource">
+                <h2 class="or-res-title">Your Resources:</h2>
+                {% for resource in myresources %}
+                <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
+                <hr>
+                {% endfor %}
+            </div>
+        </div>
+        {% if isIndex %}
+        <div class="col-sm-3 col-sm-offset-1 or-sidebar">
+            <div class="sidebar-module sidebar-module-inset">
+                <form action="/search" method="get">
+                    <input type="text" class="top-left" name="resource_name">
+                    <input type="submit" class="btn btn-default" value="search">
+                </form>
+            </div>
+            <div class="sidebar-module">
+                <h4>Resources</h4>
+
+                <div class="list-group">
+                    {% for resource in resources %}
+                    <li class="list-group-item">
+                        <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
+                        {{resource.available_time_start.strftime("%H:%M:%S")}}
+                        {{resource.available_time_end.strftime("%H:%M:%S")}}
+                    </li>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</body>
 </html>
 {% endautoescape %}

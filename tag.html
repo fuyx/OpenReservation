@@ -1,14 +1,38 @@
 <!DOCTYPE html>
+<html lang="en">
 {% autoescape true %}
 <head>
+    <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
-    <title>Resources with Tag: {{tag}}</title>
+    <title>Resources With Tag: {{tag}}</title>
 </head>
 <body>
-{% for resource in resources%}
-<a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
-<hr>
-{% endfor %}
+<div class="or-masthead">
+    <div class="container">
+        <nav class="or-nav">
+            <a class="or-nav-item" href="/">Home</a>
+            <a class="or-nav-item" href="/addresource">Add Resources</a>
+            <a class="or-nav-item" href={{url}}>{{url_linktext}}</a>
+        </nav>
+    </div>
+</div>
+<div class="container">
+    <div class="or-header">
+        <h1 class="or-title">Resources With Tag: {{tag}}</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-8 or-main">
+            <div class="or-resource">
+                {% for resource in resources%}
+                <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
+                <hr>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
 {% endautoescape %}

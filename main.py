@@ -1,3 +1,4 @@
+
 from model import *
 from util import *
 import os
@@ -55,14 +56,21 @@ class AddResResult(webapp2.RequestHandler):
         resource.owner = user.email()
         resource.resource_name = self.request.get('resname')
         try:
-            start = self.request.get('stime').split(",")
-            end = self.request.get('etime').split(",")
-            resource.available_time_start = getTime(start[0], start[1])
-            resource.available_time_end = getTime(end[0], end[1])
+            start = self.request.get('stime')
+            end = self.request.get('etime')
+            resource.available_time_start = getTime(start)
+            resource.available_time_end = getTime(end)
         except:
-            self.response.write('error')
+            template_values = {
+                'error_message': 'wrong time format',
+                'url': '/addresource',
+                'url_linktext': 'try again'
+            }
+            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            self.response.write(template.render(template_values))
             return
-        resource.tags = self.request.get('tags').split(',')
+        # resource.available_time_start=self.request.get('bdaytime')
+        resource.tags = self.request.POST.getall('tags')
         img=self.request.get('img')
         if img:
             img=images.resize(img,180,180)
@@ -70,16 +78,15 @@ class AddResResult(webapp2.RequestHandler):
         if self.request.get('description'):
             resource.description=self.request.get('description')
         resource.description=self.request.get('description')
-        if (user and resource.resource_name != ''):
-            resource.put()
-            self.redirect('/')
-        else:
-            self.response.write('error')
+        resource.put()
+        self.redirect('/')
 
 class AddReservation(webapp2.RequestHandler):
     def get(self):
         resource_name = self.request.get('resource_name')
         user = users.get_current_user()
+        resource=Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
+        time_range=resource.available_time_start.strftime("%H:%M")+" to "+resource.available_time_end.strftime("%H:%M")
         if user:
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
@@ -90,6 +97,7 @@ class AddReservation(webapp2.RequestHandler):
             'resource_name': resource_name,
             'url': url,
             'url_linktext': url_linktext,
+            'time':time_range,
         }
         template = JINJA_ENVIRONMENT.get_template('add_reservation.html')
         self.response.write(template.render(template_values))
@@ -98,7 +106,7 @@ class AddReservResult(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
-        start = self.request.get('stime').split(",")
+        start = getDatetimeList(self.request.get('stime'))
         end = start[:]
         if self.request.get('duration'):
             end[3] = int(end[3]) + int(self.request.get('duration'))
@@ -134,7 +142,7 @@ class AddReservResult(webapp2.RequestHandler):
         reservation.end_datetime = getDatetime(end)
         reservation.end_datetime_string = reservation.end_datetime.strftime("%m/%d/%y,%H:%M")
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
-        resource.last_reserve_time = getCurrentDatetime()
+        resource.last_reserve_time = getCurrentDatetime().strftime("%m/%d/%y,%H:%M")
         resource.reserve_times+=1
         resource.put()
         key=reservation.put()
@@ -176,13 +184,19 @@ class ResourcePage(webapp2.RequestHandler):
         resource = Resource.query(Resource.resource_name == self.request.get('resource_name')).get()
         reservations = Reservation.query(Reservation.resource_name == resource.resource_name)
         if user:
+            url = users.create_logout_url(self.request.uri)
+            url_linktext = 'Logout'
             email = user.email()
         else:
             email = ''
+            url = users.create_login_url(self.request.uri)
+            url_linktext = 'Login'
         template_values = {
             'resource': resource,
             'reservations': reservations,
-            'user': email
+            'user': email,
+            'url': url,
+            'url_linktext': url_linktext,
         }
         template = JINJA_ENVIRONMENT.get_template('resource.html')
         self.response.write(template.render(template_values))
@@ -193,11 +207,9 @@ class ChangeResource(webapp2.RequestHandler):
         resources = Resource.query(Resource.resource_name == self.request.get('resname'))
         for resource in resources:
             resource.resource_name = self.request.get('resname')
-            stime = self.request.get('stime').split(':')
-            resource.available_time_start = time(int(stime[0]), int(stime[1]), int(stime[2]))
-            etime = self.request.get('etime').split(':')
-            resource.available_time_end = time(int(etime[0]), int(etime[1]), int(etime[2]))
-            resource.tags = self.request.POST.getall('tag')
+            resource.available_time_start = getTime(self.request.get('stime'))
+            resource.available_time_end = getTime(self.request.get('etime'))
+            resource.tags = self.request.POST.getall('tags')
             resource.put()
         self.redirect('/')
 

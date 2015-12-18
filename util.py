@@ -1,15 +1,26 @@
 from google.appengine.api import mail
 from datetime import time, datetime
+import datetime
 from model import Reservation
 from google.appengine.api.background_thread import background_thread
 import pytz
 
-def getTime(hour, min):
-    return time(int(hour), int(min))
+# convert input time string to time format
+def getTime(time):
+    st=time.split(':')
+    return datetime.time(int(st[0]), int(st[1]))
+    # return datetime.time(10,1)
 
+# convert datetime string to datetime list
+def getDatetimeList(dt):
+    tmp=dt.split("T")
+    date=tmp[0].strip().split("-")
+    time=tmp[1].strip().split(":")
+    return [date[0].strip(),date[1].strip(),date[2].strip(),time[0].strip(),time[1].strip()]
 
+# convert datetime list to datetime format
 def getDatetime(dt):
-    return datetime(int(dt[0]), int(dt[1]), int(dt[2]), int(dt[3]), int(dt[4]))
+    return datetime.datetime(int(dt[0]), int(dt[1]), int(dt[2]), int(dt[3]), int(dt[4]))
 
 
 def isEqual(s1, s2=''):
@@ -20,7 +31,7 @@ def isEqual(s1, s2=''):
 
 
 def deleteOutDateReservation():
-    out_date_res = Reservation.query(Reservation.end_datetime < datetime.now())
+    out_date_res = Reservation.query(Reservation.end_datetime < datetime.datetime.now())
     for reservation in out_date_res:
         reservation.key.delete()
 
@@ -118,7 +129,7 @@ Your reservation of %s starts now!
 The Open Reservation Team
 ''' % (reservation.user, reservation.resource_name))
 
-# get current time from utc
+# get EST time from utc
 def getCurrentDatetime():
-    return datetime.now().replace(tzinfo = pytz.FixedOffset(+300)).astimezone(pytz.timezone('utc'))
+    return datetime.datetime.now().replace(tzinfo = pytz.FixedOffset(+300)).astimezone(pytz.timezone('utc'))
 

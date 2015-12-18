@@ -1,13 +1,37 @@
 <!DOCTYPE html>
+<html lang="en">
 {% autoescape true %}
 <head>
+    <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
-    <title>Error Page</title>
+    <title>{{error_message}}</title>
 </head>
 <body>
-    <h1>{{error_message}}</h1>
+<div class="or-masthead">
+    <div class="container">
+        <nav class="or-nav">
+            <a class="or-nav-item" href="/">Home</a>
+            <a class="or-nav-item" href="/addresource">add a new resource</a>
+            <a class="or-nav-item" href="/">Contact</a>
+            <a class="or-nav-item" href="/">About</a>
+            <a class="or-nav-item" href={{url}}>{{url_linktext}}</a>
+        </nav>
+    </div>
+</div>
+<div class="container">
+    <div class="or-header">
+        <h1 class="or-title">{{error_message}}</h1>
+    </div>
     <br>
-    <a href="{{url}}">{{ url_linktext }}</a>
+
+    <div class="container">
+        <div class="or-resource">
+            <a class="or-res-title" href="{{url}}">{{ url_linktext }}</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>
 {% endautoescape %}

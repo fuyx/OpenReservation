@@ -1,22 +1,48 @@
 <!DOCTYPE html>
+<html lang="en">
 {% autoescape true %}
 <head>
+    <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Add Reservation</title>
 </head>
 <body>
-    <h1>Add Reservation for {{resource_name}}</h1>
-    <form action="/addreservation/result" method="post">
-        <input type="hidden" name="resource_name" value="{{resource_name}}"><br>
-        start time:<br>
-        <input type="text" name="stime"><br>
-        duration:<br>
-        <input type="text" name="duration"><br>
-        <br>
-        <input type="submit" value="add">
-    </form>
-    <hr>
-    <a href="{{ url|safe }}">{{ url_linktext }}</a>
+<div class="or-masthead">
+    <div class="container">
+        <nav class="or-nav">
+            <a class="or-nav-item" href="/">Home</a>
+            <a class="or-nav-item" href="/addresource">Add Resources</a>
+            <a class="or-nav-item" href={{url}}>{{url_linktext}}</a>
+        </nav>
+    </div>
+</div>
+<div class="container">
+    <div class="or-header">
+        <h1 class="or-title">Add Reservation For {{resource_name}}</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-8 or-main">
+            <div class="or-resource">
+                <p class="or-res-name">Available time: {{time}}</p>
+                <form class="form-horizontal" role="form" action="/addreservation/result" method="post">
+                    <div class="form-group">
+                        <label>start time:</label><br>
+                        <input type="datetime-local" name="stime"><br>
+                    </div>
+                    <div class="form-group">
+                        <label>duration(hours):</label><br>
+                        <input type="text" name="duration"><br>
+                    </div>
+                    <input type="hidden" name="resource_name" value="{{resource_name}}"><br>
+                    <input type="submit" class="btn btn-info" value="add">
+                </form>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
 {% endautoescape %}
