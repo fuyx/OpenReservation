@@ -1,3 +1,5 @@
+# author: Yixian Fu
+# Dec. 2015
 from google.appengine.api import mail
 from datetime import time, datetime
 import datetime
@@ -32,7 +34,7 @@ def isEqual(s1, s2=''):
     else:
         return False
 
-
+# remove null tags
 def removeNullTags(tags):
     result = []
     for tag in tags:
@@ -42,12 +44,13 @@ def removeNullTags(tags):
 
 
 # delete all the out-dated reservations
+# work with google cron job
 def deleteOutDateReservation():
     out_date_res = Reservation.query(Reservation.end_datetime < getCurrentDatetime())
     for reservation in out_date_res:
         reservation.key.delete()
 
-
+# check whether reservation is within the available time of the resource
 def checkResourceTime(start, end, res_start, res_end):
     try:
         stime = time(int(start[3]), int(start[4]))
@@ -59,7 +62,7 @@ def checkResourceTime(start, end, res_start, res_end):
     else:
         return False
 
-
+# check whether there is a confict if we add a new reservation of the given resource
 def checkReservationConflict(resname, dt_start, dt_end):
     reservations = Reservation.query(Reservation.resource_name == resname).order(Reservation.start_datetime)
     prev_end_time = None
@@ -76,7 +79,7 @@ def checkReservationConflict(resname, dt_start, dt_end):
         return True
     return False
 
-
+# generate RSS
 def genRSS(reservations, resource_name, dt):
     RSS = '''
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -100,7 +103,7 @@ def genRSS(reservations, resource_name, dt):
 </rss>'''
     return RSS
 
-
+# send reservation confirmation email to user
 def send_reserve_confirmation(address, reservation):
     mail.send_mail(sender="Open Reservation Team <easonfu1994@gmail.com>",
                    to=address,
@@ -114,19 +117,8 @@ The Open Reservation Team
 ''' % (reservation.user, reservation.resource_name, reservation.start_datetime_string, reservation.end_datetime_string))
 
 
-# def checkReservation():
-#     reservations=Reservation.query(Reservation.start_datetime.strftime("%m/%d/%y,%H:%M")==datetime.now().strftime("%m/%d/%y,%H:%M"))
-#     for reservation in reservations:
-#         mail.send_mail(sender="Open Reservation Team",
-#                        to=reservation.user,
-#                        subject='Reservation Start Notification',
-#                        body='''
-# Dear %s:
-#
-# Your reservation of %s starts now!
-#
-# The Open Reservation Team
-# ''' % (reservation.user,reservation.resource_name))
+# if a reservation starts, send a email to notify its user
+# work with google cron job
 def checkReservation():
     reservations = Reservation.query(
         Reservation.start_datetime_string == getCurrentDatetime().strftime("%m/%d/%y,%H:%M"))
