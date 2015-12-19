@@ -388,7 +388,7 @@ app = webapp2.WSGIApplication([
     ('/resource/change', ChangeResource),
     ('/user', UserPage),
     ('/tag', TagPage),
-    # ('/RSS', RSSPage),
+    ('/RSS', RSSPage),
     ('/search', SearchPage),
     ('/img', Image),
     ('/checkreservation', CheckReservation),
