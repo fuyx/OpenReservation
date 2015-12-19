@@ -288,6 +288,12 @@ class UserPage(webapp2.RequestHandler):
         user = self.request.get('user')
         reservations = Reservation.query().order(-Reservation.start_datetime)
         resources = Resource.query(Resource.owner == user)
+        hasRes = True
+        hasReserv = True
+        if not resources.get():
+            hasRes = False
+        if not reservations.get():
+            hasReserv = False
         template_values = {
             'myresources': resources,
             'reservations': reservations,
@@ -295,6 +301,8 @@ class UserPage(webapp2.RequestHandler):
             'user': user,
             'url': url,
             'url_linktext': url_linktext,
+            'hasRes': hasRes,
+            'hasReserv': hasReserv,
         }
         template = JINJA_ENVIRONMENT.get_template(home_page)  # reuse index.html with different parameter
         self.response.write(template.render(template_values))
