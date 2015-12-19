@@ -15,6 +15,12 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
+home_page = 'html/index.html'
+resource_page = 'html/resource.html'
+add_resource_page = 'html/add_resource.html'
+error_page = 'html/erro.html'
+add_reserve_page = 'html/add_reservation.html'
+tag_page = 'html/tag.html'
 
 
 # add new resources request handler
@@ -31,7 +37,7 @@ class AddResource(webapp2.RequestHandler):
             'url': url,
             'url_linktext': url_linktext,
         }
-        template = JINJA_ENVIRONMENT.get_template('add_resource.html')
+        template = JINJA_ENVIRONMENT.get_template(add_resource_page)
         self.response.write(template.render(template_values))
 
 
@@ -58,7 +64,7 @@ class AddResResult(webapp2.RequestHandler):
                 'url': '/addresource',
                 'url_linktext': 'try agian!'
             }
-            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            template = JINJA_ENVIRONMENT.get_template(error_page)
             self.response.write(template.render(template_values))
             return
         resource.owner = user.email()
@@ -74,7 +80,7 @@ class AddResResult(webapp2.RequestHandler):
                 'url': '/addresource',
                 'url_linktext': 'try again'
             }
-            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            template = JINJA_ENVIRONMENT.get_template(error_page)
             self.response.write(template.render(template_values))
             return
         # resource.available_time_start=self.request.get('bdaytime')
@@ -107,7 +113,7 @@ class AddReservation(webapp2.RequestHandler):
                 'url': '/',
                 'url_linktext': 'go to landing page',
             }
-            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            template = JINJA_ENVIRONMENT.get_template(error_page)
             self.response.write(template.render(template_values))
             return
         if user:
@@ -122,7 +128,7 @@ class AddReservation(webapp2.RequestHandler):
             'url_linktext': url_linktext,
             'time': time_range,
         }
-        template = JINJA_ENVIRONMENT.get_template('add_reservation.html')
+        template = JINJA_ENVIRONMENT.get_template(add_reserve_page)
         self.response.write(template.render(template_values))
 
 
@@ -140,7 +146,7 @@ class AddReservResult(webapp2.RequestHandler):
                 'url': '/addreservation?resource_name=' + self.request.get('resource_name'),
                 'url_linktext': 'Go Back'
             }
-            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            template = JINJA_ENVIRONMENT.get_template(error_page)
             self.response.write(template.render(template_values))
             return
         end = start[:]
@@ -158,7 +164,7 @@ class AddReservResult(webapp2.RequestHandler):
                 'url': '/addreservation?resource_name=' + self.request.get('resource_name'),
                 'url_linktext': 'try again'
             }
-            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            template = JINJA_ENVIRONMENT.get_template(error_page)
             self.response.write(template.render(template_values))
             return
         if not checkReservationConflict(self.request.get('resource_name'), getDatetime(start), getDatetime(end)):
@@ -167,7 +173,7 @@ class AddReservResult(webapp2.RequestHandler):
                 'url': '/addreservation?resource_name=' + self.request.get('resource_name'),
                 'url_linktext': 'try again'
             }
-            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            template = JINJA_ENVIRONMENT.get_template(error_page)
             self.response.write(template.render(template_values))
             return
         reservation = Reservation()
@@ -205,7 +211,7 @@ class DeleteReservation(webapp2.RequestHandler):
                     'url': '/',
                     'url_linktext': 'go to landing page'
                 }
-                template = JINJA_ENVIRONMENT.get_template('erro.html')
+                template = JINJA_ENVIRONMENT.get_template(error_page)
                 self.response.write(template.render(template_values))
         except:
             template_values = {
@@ -213,7 +219,7 @@ class DeleteReservation(webapp2.RequestHandler):
                 'url': '/',
                 'url_linktext': 'go to landing page'
             }
-            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            template = JINJA_ENVIRONMENT.get_template(error_page)
             self.response.write(template.render(template_values))
 
 
@@ -231,7 +237,7 @@ class ResourcePage(webapp2.RequestHandler):
                 'url': '/',
                 'url_linktext': 'go to landing page',
             }
-            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            template = JINJA_ENVIRONMENT.get_template(error_page)
             self.response.write(template.render(template_values))
             return
         if user:
@@ -253,7 +259,7 @@ class ResourcePage(webapp2.RequestHandler):
             'url_linktext': url_linktext,
             'hasImg': hasImg,
         }
-        template = JINJA_ENVIRONMENT.get_template('resource.html')
+        template = JINJA_ENVIRONMENT.get_template(resource_page)
         self.response.write(template.render(template_values))
 
 
@@ -290,7 +296,7 @@ class UserPage(webapp2.RequestHandler):
             'url': url,
             'url_linktext': url_linktext,
         }
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+        template = JINJA_ENVIRONMENT.get_template(home_page)  # reuse index.html with different parameter
         self.response.write(template.render(template_values))
 
 
@@ -312,7 +318,7 @@ class TagPage(webapp2.RequestHandler):
             'url': url,
             'url_linktext': url_linktext,
         }
-        template = JINJA_ENVIRONMENT.get_template('tag.html')
+        template = JINJA_ENVIRONMENT.get_template(tag_page)
         self.response.write(template.render(template_values))
 
 
@@ -339,7 +345,7 @@ class SearchPage(webapp2.RequestHandler):
                 'url': '/',
                 'url_linktext': 'go to landing page'
             }
-            template = JINJA_ENVIRONMENT.get_template('erro.html')
+            template = JINJA_ENVIRONMENT.get_template(error_page)
             self.response.write(template.render(template_values))
 
 
@@ -399,7 +405,7 @@ class MainHandler(webapp2.RequestHandler):
             'hasRes': hasRes,
             'hasReserv': hasReserv,
         }
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+        template = JINJA_ENVIRONMENT.get_template(home_page)
         self.response.write(template.render(template_values))
 
 
