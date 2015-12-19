@@ -1,4 +1,4 @@
 cron:
-- description: send notification
+- description: check start time of reservation and delete out-dated reservation
   url: /checkreservation
   schedule: every 1 minutes

@@ -20,16 +20,23 @@
 </div>
 <div class="container">
     <div class="or-header">
-        <h1 class="or-title">{{error_message}}</h1>
+        <h1 class="or-title">Error Page</h1>
     </div>
     <br>
 
-    <div class="or-resource">
-        <a class="or-res-title" href="{{url}}">{{ url_linktext }}</a>
+    <div class="row">
+        <div class="col-sm-8 or-main">
+            <div class="or-resource">
+                <div class="or-resource">
+                    <p>{{error_message}}</p>
+                    <a href="{{url}}">{{ url_linktext }}</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <footer class="or-footer">
-    <p>Website build by yf899@nyu.edu</p>
+    <p>Website built by Yixian Fu</p>
 
     <p>
         <a href="#">Back to top</a>

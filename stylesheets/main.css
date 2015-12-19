@@ -1,8 +1,4 @@
-
-/*
- * Globals
- */
-
+/* CSS FILE FOR OPEN RESERVATION*/
 body {
     font-family: Georgia, "Times New Roman", Times, serif;
     color: #555;
@@ -20,13 +16,10 @@ h6, .h6 {
     color: #333;
 }
 
-/*
- * Override Bootstrap's default container.
- */
-
 @media (min-width: 1200px) {
     .container {
-        width: 970px;
+        width: 800px;
+
     }
 }
 
@@ -45,6 +38,7 @@ h6, .h6 {
     position: relative;
     display: inline-block;
     padding: 10px;
+    font-size: 18px;
     font-weight: 500;
     color: #cdddeb;
 }
@@ -103,7 +97,7 @@ h6, .h6 {
 /* Sidebar modules for boxing content */
 .sidebar-module {
     padding: 15px;
-    margin: 0 -150px 15px;
+    margin: 0 -120px 15px;
 }
 
 .sidebar-module-inset {
@@ -114,7 +108,7 @@ h6, .h6 {
 
 .sidebar-module-res {
     padding: 15px;
-    margin: 0 -150px 15px;
+    margin: 0 -130px 15px;
     font-size: 20px;
 }
 
@@ -124,22 +118,15 @@ h6, .h6 {
     margin-bottom: 0;
 }
 
-/* Pagination */
-.pager {
-    margin-bottom: 60px;
-    text-align: left;
-}
-
-.pager > li > a {
-    width: 140px;
-    padding: 10px 20px;
-    text-align: center;
-    border-radius: 30px;
+.or-search{
+    margin-bottom: 30px;
+    font-size: 20px;
 }
 
 .or-resource {
     margin-bottom: 30px;
-    min-height:200px;
+    margin-right: 50px;
+    min-height:100px;
     height:auto;
 }
 

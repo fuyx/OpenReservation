@@ -20,50 +20,56 @@
 </div>
 <div class="container">
     <div class="or-header">
-        <h1 class="or-title">Resource Page of {{resource.resource_name}}</h1>
+        <h1 class="or-title">{{resource.resource_name}}</h1>
+        <p class="or-description">The resource page of {{resource.resource_name}}.</p>
     </div>
-    <br>
 
     <div class="row">
         <div class="col-sm-8 or-main">
             <div class="or-resource">
-                <a href="/addreservation?resource_name={{resource.resource_name}}">Reserve
-                    {{resource.resource_name}}</a><br>
-                <a href="/RSS?resource_name={{resource.resource_name}}">Dump this resource to RSS</a><br>
+                <h2 class="or-res-title">About {{resource.resource_name}}</h2>
 
-                <p>Reserved times: {{resource.reserve_times}}<br>
+                <p>
                     Tags:
                     {% for tag in resource.tags %}
-                    <a href="/tag?tag={{tag}}">{{tag}}</a>
+                    <a class="label label-info" href="/tag?tag={{tag}}">{{tag}}</a>
                     {% endfor %}
                     <br>
                 </p>
+                <a href="/addreservation?resource_name={{resource.resource_name}}">Reserve
+                    {{resource.resource_name}}</a>&nbsp&nbsp&nbsp
+                <a href="/RSS?resource_name={{resource.resource_name}}">Dump to RSS</a><br>
+                Reserved times: {{resource.reserve_times}}<br>
+                <br>
                 {% if hasImg %}
                 <div><img src="/img?img_id={{resource.key.urlsafe()}}"></img></div>
                 {% endif %}
-                {{resource.description}}<br>
-                <hr>
+                <br>
+                {% if resource.description %}
+                <p class="or-res-name">Description: {{resource.description}}<br></p>
+                <br>
+                {% endif %}
             </div>
             <div class="or-resource">
                 <h2 class="or-res-title">Reservations of {{resource.resource_name}}:</h2>
                 {% for reservation in reservations %}
-                <a href="/reservation?resource_name={{reservation.resource_name}}">{{reservation.start_datetime.strftime("%m/%d/%y,%H:%M:%S")}}
-                    to {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}</a>
-                <br>
+                <p class="or-res-name">{{loop.index}}. Made by <a
+                        href="/user?user={{reservation.user}}">{{reservation.user}}</a></p>
 
-                <p class="or-res-name"></a>made by <a
-                        href="/user?user={{reservation.user}}">{{reservation.user}}</a>
+                <p class="or-res-name">from {{reservation.start_datetime.strftime("%I:%M %p")}}
+                    to {{reservation.end_datetime.strftime("%I:%M %p")}} in {{reservation.end_datetime.strftime("%b %d
+                    %Y")}}
                 </p>
-                <hr>
+                <br>
                 {% endfor %}
             </div>
         </div>
         {% if resource.owner|string == user|string %}
         <div class="col-sm-3 col-sm-offset-1 or-sidebar">
             <script type="text/javascript" src="/js/addtags.js"></script>
-            <div class="sidebar-module sidebar-module-inset">
-                <h4>Change Resource Information</h4>
-
+            <div class="sidebar-module">
+                <h4 class="or-res-title">Change Information</h4>
+                <br>
                 <form role="form" action="/resource/change" method="post">
                     <div class="form-group">
                         <label>Resource name:</label><br>
@@ -88,7 +94,7 @@
                         {% endfor %}
                     </div>
 
-                    <input type="submit" class="btn btn-info" value="change">
+                    <input type="submit" class="btn btn-success" value="change">
                 </form>
             </div>
         </div>
@@ -96,8 +102,7 @@
     </div>
 </div>
 <footer class="or-footer">
-    <p>Website build by yf899@nyu.edu</p>
-
+    <p>Website built by Yixian Fu</p>
     <p>
         <a href="#">Back to top</a>
     </p>

@@ -64,6 +64,7 @@ def checkReservationConflict(resname, dt_start, dt_end):
     reservations = Reservation.query(Reservation.resource_name == resname).order(Reservation.start_datetime)
     prev_end_time = None
     last_reservation = None
+
     for reservation in reservations:
         if dt_end <= reservation.start_datetime:
             if prev_end_time is None or dt_start >= prev_end_time:

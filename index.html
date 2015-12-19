@@ -4,6 +4,7 @@
 <head>
     <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
+    <link rel="icon" href="/img/OR_H.ico"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     {% if isIndex %}
@@ -14,7 +15,7 @@
 </head>
 <body>
 <div class="or-masthead">
-    <div class="container">
+    <div id="top" class="container">
         <nav class="or-nav">
             <a class="or-nav-item active" href="/">Home</a>
             <a class="or-nav-item" href="/addresource">Add Resources</a>
@@ -25,11 +26,15 @@
 <div class="container">
     {% if isIndex %}
     <div class="or-header">
-        <h1 class="or-title">Open Reservation</h1>
+        <h1 class="or-title ">Open Reservation</h1>
+
+        <p class="lead or-description">The place to reserve and share anything with others.</p>
     </div>
     {% else %}
     <div class="or-header">
-        <h1 class="or-title">Information about {{user}}</h1>
+        <h1 class="or-title">{{user}}</h1>
+
+        <p class="lead or-description">The user page of {{user}}.</p>
     </div>
     {% endif %}
     <div class="row">
@@ -38,77 +43,79 @@
                 {% if isIndex %}
                 <h2 class="or-res-title">Your Reservations:</h2>
                 {% else %}
-                <h2 class="or-res-title">Reservations of {{user.email()}}:</h2>
+                <h2 class="or-res-title">Reservations of {{user}}:</h2>
                 {% endif %}
-                {% if not reservation %}
+                {% if not hasReserv %}
                 <h4 class="or-res-content">You have no reservation yet.</h4>
                 {% endif %}
                 {% for reservation in reservations %}
-                <a href="/resource?resource_name={{reservation.resource_name}}">{{reservation.resource_name}}</a>
+                <li class="list-group-item">
+                {{loop.index}}.&nbsp<a href="/resource?resource_name={{reservation.resource_name}}">{{reservation.resource_name}}</a>
                 <br>
-                <p class="or-res-name"></a> reserved by <a href="/user?user={{reservation.user}}">{{reservation.user}}</a>
+                <p class="or-res-name">
+                    from {{reservation.start_datetime.strftime("%I:%M %p")}}
+                    to {{reservation.end_datetime.strftime("%I:%M %p")}} in {{reservation.end_datetime.strftime("%b %d
+                    %Y")}}
+                    <br>
                 </p>
-                from {{reservation.start_datetime.strftime("%m/%d/%y,%H:%M:%S")}}
-                    to {{reservation.end_datetime.strftime("%m/%d/%y,%H:%M:%S")}}
-                <br>
                 {% if isIndex %}
-                <button class="btn btn-danger"
-                        src="/deletereservation?resource_name={{reservation.resource_name}}&start_datetime_string={{reservation.start_datetime_string}}">
+                <a class="btn btn-danger"
+                   href="/deletereservation?resource_name={{reservation.resource_name}}&start_datetime_string={{reservation.start_datetime_string}}">
                     delete
-                </button>
+                </a>
                 {% endif %}
-                <br>
-                <hr>
+                </li>
                 {% endfor %}
             </div>
             <div class="or-resource">
                 {% if isIndex %}
                 <h2 class="or-res-title">Your Resources:</h2>
                 {% else %}
-                <h2 class="or-res-title">Resources of {{user.email()}}:</h2>
+                <h2 class="or-res-title">Resources of {{user}}:</h2>
                 {% endif %}
                 {% if not hasRes %}
-                <h4 class="or-res-content">You have no resource available. <a href="/addresource">Add a new resource.</a></h4>
+                <h4 class="or-res-content">You have no resource available. <a href="/addresource">Add a new
+                    resource.</a></h4>
                 {% endif %}
                 {% for resource in myresources %}
-                <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
-                <hr>
+                <li class="list-group-item">
+                    {{loop.index}}.&nbsp<a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
+                </li>
                 {% endfor %}
             </div>
         </div>
         {% if isIndex %}
         <div class="col-sm-3 col-sm-offset-1 or-sidebar">
-            <div class="sidebar-module sidebar-module-inset">
-                <form action="/search" method="get">
-                    <input type="text" class="top-left" name="resource_name">
-                    <input type="submit" class="btn btn-default" value="search">
-                </form>
-            </div>
             <div class="sidebar-module-res">
-                <h4>Resources</h4>
+                <h2 class="or-res-title">Resources</h2>
 
+                <div class="or-search">
+                    <form action="/search" method="get">
+                        <input type="text" class="top-left" name="resource_name">
+                        <input type="submit" class="btn btn-default" value="search">
+                    </form>
+                </div>
                 <div class="list-group">
                     {% for resource in resources %}
                     <li class="list-group-item">
-                        <a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
+                        {{loop.index}}.&nbsp<a href="/resource?resource_name={{resource.resource_name}}">{{resource.resource_name}}</a>
                         <br>Available time:
-                        {{resource.available_time_start.strftime("%H:%M:%S")}}
-                        {{resource.available_time_end.strftime("%H:%M:%S")}}<br>
+                        {{resource.available_time_start.strftime("%H:%M %p")}} to
+                        {{resource.available_time_end.strftime("%H:%M %p")}}<br>
                         <a class="btn btn-success" href="/addreservation?resource_name={{resource.resource_name}}">Reserve</a>
                     </li>
                     {% endfor %}
                 </div>
             </div>
-            </html>
         </div>
         {% endif %}
     </div>
 </div>
 <footer class="or-footer">
-    <p>Website build by yf899@nyu.edu</p>
+    <p>Website built by Yixian Fu</p>
 
     <p>
-        <a href="#">Back to top</a>
+        <a href="#top">Back to top</a>
     </p>
 </footer>
 </body>
