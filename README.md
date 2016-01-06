@@ -1,19 +1,11 @@
-[Open Reservation](http://www.open-reservation.appspot.com)
--[]Yixian Fu ,Dec. 2015
--[]yf899@nyu.edu 
-
--[]Call /path/to/appengine/dev_appserver.py /path/to/Open-Reservation to run the application locally.
-
--[]Directory Structures:
-	./html: html file
-	./js: javascript file
-	./stylesheets: css file
-	./img: website ico
-	./dist: Bootstrap API
-	./pytz: pytz library
-		main.py: controller modules
-		mode.py: model modules
-		util.py: utility modules
-		app.yaml: main yaml file
-		cron.yaml: cron job yaml file
-		index.yaml: data store yaml file
+#Open Reservation
+#####[Open Reservation](http://www.open-reservation.appspot.com) is a website where users can reserve and share resources with others.  
+<br>
+##Geting Started
+#####Call /path/to/appengine/dev_appserver.py /path/to/Open-Reservation to run the application locally.
+<br>
+##Development Environment
+####SDK
+Python:2.7.6<br>
+Google App Engine for Python: 1.9.30<br>
+Jinja2: 2.8<br>
