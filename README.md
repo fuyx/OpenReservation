@@ -1,9 +1,10 @@
-Yixian Fu ,Dec. 2015
-yf899@nyu.edu 
+[Open Reservation](http://www.open-reservation.appspot.com)
+-[]Yixian Fu ,Dec. 2015
+-[]yf899@nyu.edu 
 
-Call /path/to/appengine/dev_appserver.py /path/to/Open-Reservation to run the application locally.
+-[]Call /path/to/appengine/dev_appserver.py /path/to/Open-Reservation to run the application locally.
 
-Directory Structures:
+-[]Directory Structures:
 	./html: html file
 	./js: javascript file
 	./stylesheets: css file
