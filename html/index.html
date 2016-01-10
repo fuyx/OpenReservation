@@ -4,9 +4,11 @@
 <head>
     <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="/stylesheets/main.css"/>
+    <link type="text/css" href="/stylesheets/ie10-viewport-bug-workaround.css" rel="stylesheet">
     <link rel="icon" href="/img/OR_H.ico"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
     {% if isIndex %}
     <title>Open Reservation</title>
     {% else %}
@@ -50,20 +52,22 @@
                 {% endif %}
                 {% for reservation in reservations %}
                 <li class="list-group-item">
-                {{loop.index}}.&nbsp<a href="/resource?resource_name={{reservation.resource_name}}">{{reservation.resource_name}}</a>
-                <br>
-                <p class="or-res-name">
-                    from {{reservation.start_datetime.strftime("%I:%M %p")}}
-                    to {{reservation.end_datetime.strftime("%I:%M %p")}} in {{reservation.end_datetime.strftime("%b %d
-                    %Y")}}
+                    {{loop.index}}.&nbsp<a href="/resource?resource_name={{reservation.resource_name}}">{{reservation.resource_name}}</a>
                     <br>
-                </p>
-                {% if isIndex %}
-                <a class="btn btn-danger"
-                   href="/deletereservation?resource_name={{reservation.resource_name}}&start_datetime_string={{reservation.start_datetime_string}}">
-                    delete
-                </a>
-                {% endif %}
+
+                    <p class="or-res-name">
+                        from {{reservation.start_datetime.strftime("%I:%M %p")}}
+                        to {{reservation.end_datetime.strftime("%I:%M %p")}} in {{reservation.end_datetime.strftime("%b
+                        %d
+                        %Y")}}
+                        <br>
+                    </p>
+                    {% if isIndex %}
+                    <a class="btn btn-danger"
+                       href="/deletereservation?resource_name={{reservation.resource_name}}&start_datetime_string={{reservation.start_datetime_string}}">
+                        delete
+                    </a>
+                    {% endif %}
                 </li>
                 {% endfor %}
             </div>
@@ -118,6 +122,11 @@
         <a href="#top">Back to top</a>
     </p>
 </footer>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script>
+<script src="/js/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="/js/ie10-viewport-bug-workaround.js"></script>
 </body>
 </html>
 {% endautoescape %}
