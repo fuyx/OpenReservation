@@ -6,6 +6,3 @@ function addTags(divName){
     newdiv.innerHTML="<input type='text' name='tags'>";
     document.getElementById(divName).appendChild(newdiv);
 }
-function pickTime(){
-
-}

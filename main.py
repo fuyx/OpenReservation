@@ -23,24 +23,6 @@ add_reserve_page = 'html/add_reservation.html'
 tag_page = 'html/tag.html'
 
 
-# add new resources request handler
-class AddResource(webapp2.RequestHandler):
-    def get(self):
-        user = users.get_current_user()
-        if user:
-            url = users.create_logout_url(self.request.uri)
-            url_linktext = 'Logout'
-        else:
-            url = users.create_login_url(self.request.uri)
-            url_linktext = 'Login'
-        template_values = {
-            'url': url,
-            'url_linktext': url_linktext,
-        }
-        template = JINJA_ENVIRONMENT.get_template(add_resource_page)
-        self.response.write(template.render(template_values))
-
-
 # add new resources result handler
 # handle error cases:
 # 1. not login
@@ -273,7 +255,7 @@ class ChangeResource(webapp2.RequestHandler):
             resource.available_time_end = getTime(self.request.get('etime'))
             resource.tags = removeNullTags(self.request.POST.getall('tags'))
             resource.put()
-        self.redirect('/')
+        self.redirect('/resource?resource_name='+self.request.get('resname'))
 
 
 # handler to display the info of a given user
@@ -419,9 +401,7 @@ class MainHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/addresource', AddResource),
     ('/addresource/result', AddResResult),
-    ('/addreservation', AddReservation),
     ('/addreservation/result', AddReservResult),
     ('/deletereservation', DeleteReservation),
     ('/resource', ResourcePage),

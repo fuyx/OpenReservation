@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 {% autoescape true %}
 <head>
     <link href="/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,15 +16,33 @@
     {% endif %}
 </head>
 <body>
-<div class="or-masthead">
-    <div id="top" class="container">
-        <nav class="or-nav">
-            <a class="or-nav-item active" href="/">Home</a>
-            <a class="or-nav-item" href="/addresource">Add Resources</a>
-            <a class="or-nav-item" href={{url}}>{{url_linktext}}</a>
-        </nav>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Open Reservation</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#" data-toggle="modal"
+                       data-target="#addResourceModal" href="/#">Add Resources</a></li>
+                <li><a href={{url}}>{{url_linktext}}</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" action="/search" method="get">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="resource_name" placeholder="resource name">
+                </div>
+                <input type="submit" class="btn btn-default" value="search">
+            </form>
+        </div>
     </div>
-</div>
+</nav>
 <div class="container">
     {% if isIndex %}
     <div class="or-header">
@@ -95,8 +113,8 @@
 
                 <div class="or-search">
                     <form action="/search" method="get">
-                        <input type="text" class="top-left" name="resource_name" placeholder="resource name">
-                        <input type="submit" class="btn btn-default" value="search">
+                        <input type="text" class="form-control input-lg" name="resource_name"
+                               placeholder="resource name">
                     </form>
                 </div>
                 <div class="list-group">
@@ -106,7 +124,9 @@
                         <br>Available time:
                         {{resource.available_time_start.strftime("%H:%M %p")}} to
                         {{resource.available_time_end.strftime("%H:%M %p")}}<br>
-                        <a class="btn btn-success" href="/addreservation?resource_name={{resource.resource_name}}">Reserve</a>
+                        <a class="btn btn-success btn-lg" href="/resource?resource_name={{resource.resource_name}}">
+                            Reserve
+                        </a>
                     </li>
                     {% endfor %}
                 </div>
@@ -116,12 +136,63 @@
     </div>
 </div>
 <footer class="or-footer">
-    <p>Website built by Yixian Fu</p>
+    <p>Website built by Yixian Fu © 2015</p>
 
     <p>
         <a href="#top">Back to top</a>
     </p>
 </footer>
+<!-- Add Resources Modal -->
+<div class="modal fade" id="addResourceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add a New Resource</h4>
+            </div>
+            <div class="modal-body">
+                <script type="text/javascript" src="/js/addtags.js"></script>
+                <form class="form-group" role="form" action="/addresource/result"
+                      enctype="multipart/form-data"
+                      method="post">
+                    <div class="form-group">
+                        <label>Resource Name:</label><br>
+                        <input type="text" id="resname" name="resname" class="form-control input-lg" required
+                               placeholder="Enter resource name here"><br>
+                    </div>
+                    <div class="form-group">
+                        <label>Avalibale Start Time:</label><br>
+                        <input type="time" name="stime" class="form-control input-lg" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Avalibale End Time:</label><br>
+                        <input type="time" name="etime" class="form-control input-lg" required>
+                    </div>
+                    <div class="form-group" id="tags">
+                        <label>Tags:</label>
+                        &nbsp;&nbsp
+                        <input type="button" class="btn btn-default" value="add tags"
+                               onclick="addTags('tags');"><br>
+                        <input type="text" name="tags">
+                    </div>
+                    <div class="form-group">
+                        <label>Image:</label><br>
+                        <input type=file name="img"><br>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label><br>
+                        <input type="" cols="8" rows="3" name="description" class="form-control input-lg"><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Reserve</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script>
 <script src="/js/bootstrap.min.js"></script>

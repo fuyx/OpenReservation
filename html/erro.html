@@ -9,15 +9,33 @@
     <title>{{error_message}}</title>
 </head>
 <body>
-<div class="or-masthead">
-    <div class="container">
-        <nav class="or-nav">
-            <a class="or-nav-item" href="/">Home</a>
-            <a class="or-nav-item" href="/addresource">Add Resources</a>
-            <a class="or-nav-item" href={{url}}>{{url_linktext}}</a>
-        </nav>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Open Reservation</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="#" data-toggle="modal"
+                       data-target="#addResourceModal" href="/#">Add Resources</a></li>
+                <li><a href={{url}}>{{url_linktext}}</a></li>
+            </ul>
+            <form class="navbar-form navbar-right" action="/search" method="get">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="resource_name" placeholder="resource name">
+                </div>
+                <input type="submit" class="btn btn-default" value="search">
+            </form>
+        </div>
     </div>
-</div>
+</nav>
 <div class="container">
     <div class="or-header">
         <h1 class="or-title">Error Page</h1>
@@ -36,7 +54,7 @@
     </div>
 </div>
 <footer class="or-footer">
-    <p>Website built by Yixian Fu</p>
+    <p>Website built by Yixian Fu © 2015</p>
 
     <p>
         <a href="#">Back to top</a>

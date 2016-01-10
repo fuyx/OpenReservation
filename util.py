@@ -34,6 +34,7 @@ def isEqual(s1, s2=''):
     else:
         return False
 
+
 # remove null tags
 def removeNullTags(tags):
     result = []
@@ -50,6 +51,7 @@ def deleteOutDateReservation():
     for reservation in out_date_res:
         reservation.key.delete()
 
+
 # check whether reservation is within the available time of the resource
 def checkResourceTime(start, end, res_start, res_end):
     try:
@@ -61,6 +63,7 @@ def checkResourceTime(start, end, res_start, res_end):
         return True
     else:
         return False
+
 
 # check whether there is a confict if we add a new reservation of the given resource
 def checkReservationConflict(resname, dt_start, dt_end):
@@ -78,6 +81,7 @@ def checkReservationConflict(resname, dt_start, dt_end):
     if last_reservation is None or dt_start >= last_reservation.end_datetime:
         return True
     return False
+
 
 # generate RSS
 def genRSS(reservations, resource_name, dt):
@@ -102,6 +106,7 @@ def genRSS(reservations, resource_name, dt):
 </resource>
 </rss>'''
     return RSS
+
 
 # send reservation confirmation email to user
 def send_reserve_confirmation(address, reservation):
